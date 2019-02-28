@@ -45,7 +45,7 @@ When using in node, ensure to first require the extension so it can register its
 
 ```javascript
 var showdown = require('showdown');
-require('showdown-youtube');
+require('showdown-youtube-wrapper');
 var converter = new showdown.Converter({extensions: ['youtube']});
 ```
 
@@ -63,6 +63,49 @@ This should output the equivalent to:
 ```html
 <iframe src="//www.youtube.com/embed/dQw4w9WgXcQ?rel=0" frameborder="0" allowfullscreen></iframe>
 ```
+
+## Wrapper
+To use a wrapper for your iframe you can specify the following options after you define your converter:
+```javascript
+var converter = new showdown.Converter({extensions: ['youtube']});
+
+converter.setOption('yt-useWrapper', true); // uses the default wrapper
+
+var input = '![youtube video](http://www.youtube.com/watch?v=dQw4w9WgXcQ)';
+var html = converter.makeHtml(input);
+console.log(html);
+```
+The default wrapper is a div with showdown-youtube-embed-wrapper as its id and class. To change these the following can be specified after setting the converter:
+```javascript
+var converter = new showdown.Converter({extensions: ['youtube']});
+
+converter.setOption('yt-useWrapper', true); // uses the default wrapper
+converter.setOption('yt-wrapperEl', 'p'); // changes the default div wrapper to a paragraph
+converter.setOption('yt-wrapperId', 'youtube-embed'); // changes the default showdown-youtube-embed-wrapper id to youtube-embed
+converter.setOption('yt-wrapperClass', 'youtube-embeds'); // changes the default showdown-youtube-embed-wrapper id to youtube-embeds
+
+var input = '![youtube video](http://www.youtube.com/watch?v=dQw4w9WgXcQ)';
+var html = converter.makeHtml(input);
+console.log(html);
+```
+
+The following CSS can be accompanied with your wrapper to make it fill the width 100% along with an appropriate amount of height:
+```css
+#showdown-youtube-embed-wrapper {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+}
+#showdown-youtube-embed-wrapper > iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+```
+If you change the default ID, make sure to change the CSS aswell.
 
 ## Video size
 
