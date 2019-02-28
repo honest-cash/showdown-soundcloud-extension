@@ -1,14 +1,28 @@
-/*! showdown-youtube 14-09-2017 */
+/**
+ * Youtube Extension.
+ * Uses image syntax to embed videos
+ * Usage:
+ * ![youtube video][http://youtu.be/dQw4w9WgXcQ]
+ *
+ * or
+ *
+ * ![youtube video][1]
+ * [1]: http://youtu.be/dQw4w9WgXcQ
+ */
 (function (extension) {
   'use strict';
 
   if (typeof showdown !== 'undefined') {
+    // global (browser or nodejs global)
     extension(showdown);
   } else if (typeof define === 'function' && define.amd) {
+    // AMD
     define(['showdown'], extension);
   } else if (typeof exports === 'object') {
+    // Node, CommonJS-like
     module.exports = extension(require('showdown'));
   } else {
+    // showdown was not found so we throw
     throw Error('Could not find showdown library');
   }
 
@@ -34,6 +48,9 @@
       '</div>',
     img = '<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=" width="%2" height="%3">',
     iframe = '<iframe src="%1" width="%2" height="%3" frameborder="0" allowfullscreen></iframe>',
+    wrapper = '<%4 id="%6" class="%7">' +
+      '<iframe src="%1" width="%2" height="%3" frameborder="0" allowfullscreen></iframe>' +
+      '</%4>',
     imgRegex = /(?:<p>)?<img.*?src="(.+?)"(.*?)\/?>(?:<\/p>)?/gi,
     fullYoutubeRegex = /(?:(?:https?:)?(?:\/\/)?)(?:(?:www)?\.)?youtube\.(?:.+?)\/(?:(?:watch\?v=)|(?:embed\/))([a-zA-Z0-9_-]{11})/i,
     shortYoutubeRegex = /(?:(?:https?:)?(?:\/\/)?)?youtu\.be\/([a-zA-Z0-9_-]{11})/i,
@@ -53,6 +70,8 @@
       width = (d = /width="(.+?)"/.exec(rest)) ? d[1] : defaultWidth;
       height = (d = /height="(.+?)"/.exec(rest)) ? d[1] : defaultHeight;
     }
+
+    // add units so they can be used in css
     if (/^\d+$/gm.exec(width)) {
       width += 'px';
     }
@@ -65,12 +84,42 @@
       height: height
     };
   }
+
+  /**
+   * Replace with video iframes
+   */
   showdown.extension('youtube', function () {
     return [
       {
+        // It's a bit hackish but we let the core parsers replace the reference image for an image tag
+        // then we replace the full img tag in the output with our iframe
         type: 'output',
         filter: function (text, converter, options) {
-          var tag = iframe;
+          var tag, wrapperEl, wrapperId, wrapperClass;
+          if (options['yt-useWrapper']) {
+            tag = wrapper;
+            if (!options['yt-wrapperEl']) {
+              wrapperEl = 'div';
+            } else {
+              wrapperEl = options['yt-wrapperEl']
+            }
+
+            if (!options['yt-wrapperClass']) {
+              wrapperClass = 'showdown-youtube-embed-wrapper';
+            } else {
+              wrapperClass = options['yt-wrapperClass'];
+            }
+
+            if (!options['yt-wrapperId']) {
+              wrapperId = 'showdown-youtube-embed-wrapper';
+            } else {
+              wrapperId = options['yt-wrapperId'];
+            }
+
+          } else {
+            tag = iframe;
+          }
+
           if (options.smoothLivePreview) {
             tag = (options.youtubeUseSimpleImg) ? img : svg;
           }
@@ -87,12 +136,16 @@
             } else {
               return match;
             }
-            return tag.replace(/%1/g, fUrl).replace('%2', d.width).replace('%3', d.height);
+            return tag
+              .replace(/%1/g, fUrl)
+              .replace('%2', d.width)
+              .replace('%3', d.height)
+              .replace(/%4/g, wrapperEl)
+              .replace('%6', wrapperId)
+              .replace('%7', wrapperClass);
           });
         }
       }
     ];
   });
 }));
-
-//# sourceMappingURL=showdown-youtube.js.map
