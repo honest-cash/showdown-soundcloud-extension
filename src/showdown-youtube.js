@@ -48,6 +48,9 @@
       '</div>',
     img = '<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=" width="%2" height="%3">',
     iframe = '<iframe src="%1" width="%2" height="%3" frameborder="0" allowfullscreen></iframe>',
+    wrapper = '<%4 id="%6" class="%7">' +
+      '<iframe src="%1" width="%2" height="%3" frameborder="0" allowfullscreen></iframe>' +
+      '</%4>',
     imgRegex = /(?:<p>)?<img.*?src="(.+?)"(.*?)\/?>(?:<\/p>)?/gi,
     fullYoutubeRegex = /(?:(?:https?:)?(?:\/\/)?)(?:(?:www)?\.)?youtube\.(?:.+?)\/(?:(?:watch\?v=)|(?:embed\/))([a-zA-Z0-9_-]{11})/i,
     shortYoutubeRegex = /(?:(?:https?:)?(?:\/\/)?)?youtu\.be\/([a-zA-Z0-9_-]{11})/i,
@@ -92,7 +95,31 @@
         // then we replace the full img tag in the output with our iframe
         type: 'output',
         filter: function (text, converter, options) {
-          var tag = iframe;
+          var tag, wrapperEl, wrapperId, wrapperClass;
+          if (options['yt-useWrapper']) {
+            tag = wrapper;
+            if (!options['yt-wrapperEl']) {
+              wrapperEl = 'div';
+            } else {
+              wrapperEl = options['yt-wrapperEl']
+            }
+
+            if (!options['yt-wrapperClass']) {
+              wrapperClass = 'showdown-youtube-embed-wrapper';
+            } else {
+              wrapperClass = options['yt-wrapperClass'];
+            }
+
+            if (!options['yt-wrapperId']) {
+              wrapperId = 'showdown-youtube-embed-wrapper';
+            } else {
+              wrapperId = options['yt-wrapperId'];
+            }
+
+          } else {
+            tag = iframe;
+          }
+
           if (options.smoothLivePreview) {
             tag = (options.youtubeUseSimpleImg) ? img : svg;
           }
@@ -109,7 +136,13 @@
             } else {
               return match;
             }
-            return tag.replace(/%1/g, fUrl).replace('%2', d.width).replace('%3', d.height);
+            return tag
+              .replace(/%1/g, fUrl)
+              .replace('%2', d.width)
+              .replace('%3', d.height)
+              .replace(/%4/g, wrapperEl)
+              .replace('%6', wrapperId)
+              .replace('%7', wrapperClass);
           });
         }
       }

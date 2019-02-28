@@ -1,5 +1,5 @@
 {
-  "name": "showdown-youtube",
+  "name": "showdown-youtube-wrapper",
   "version": "1.3.0",
   "description": "Embed YouTube videos within showdown",
   "keywords": [
@@ -8,15 +8,15 @@
     "showdown extension",
     "youtube"
   ],
-  "author": "Estevão Soares dos Santos (https://github.com/tivie)",
+  "author": "Sercan AKMAN (https://github.com/nynevi)",
   "license": "BSD-2-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/showdownjs/youtube-extension.git",
-    "web": "https://github.com/showdownjs/youtube-extension"
+    "url": "https://github.com/honest-cash/showdown-youtube-extension.git",
+    "web": "https://github.com/honest-cash/showdown-youtube-extension"
   },
   "bugs": {
-    "url": "https://github.com/showdownjs/youtube-extension/issues"
+    "url": "https://github.com/honest-cash/showdown-youtube-extension/issues"
   },
   "main": "./dist/showdown-youtube.js",
   "scripts": {
