@@ -48,7 +48,7 @@
       '</div>',
     img = '<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=" width="%2" height="%3">',
     iframe = '<iframe src="%1" width="%2" height="%3" frameborder="0" allowfullscreen></iframe>',
-    wrapper = '<%4 id="%6" class="%7">' +
+    wrapper = '<%4%6%7>' +
       '<iframe src="%1" width="%2" height="%3" frameborder="0" allowfullscreen></iframe>' +
       '</%4>',
     imgRegex = /(?:<p>)?<img.*?src="(.+?)"(.*?)\/?>(?:<\/p>)?/gi,
@@ -104,16 +104,20 @@
               wrapperEl = options['yt-wrapperEl']
             }
 
-            if (!options['yt-wrapperClass']) {
-              wrapperClass = 'showdown-youtube-embed-wrapper';
-            } else {
-              wrapperClass = options['yt-wrapperClass'];
+            if (options['yt-enableWrapperClass']) {
+              if (options['yt-wrapperClass']) {
+                wrapperClass = options['yt-wrapperClass'];
+              } else {
+                wrapperClass = 'showdown-youtube-embed-wrapper';
+              }
             }
 
-            if (!options['yt-wrapperId']) {
-              wrapperId = 'showdown-youtube-embed-wrapper';
-            } else {
-              wrapperId = options['yt-wrapperId'];
+            if (options['yt-enableWrapperId']) {
+              if (options['yt-wrapperId']) {
+                wrapperId = options['yt-wrapperId'];
+              } else {
+                wrapperId = 'showdown-youtube-embed-wrapper';
+              }
             }
 
           } else {
@@ -141,8 +145,8 @@
               .replace('%2', d.width)
               .replace('%3', d.height)
               .replace(/%4/g, wrapperEl)
-              .replace('%6', wrapperId)
-              .replace('%7', wrapperClass);
+              .replace('%6', wrapperId ? " id=\"" + wrapperId + "\"" : "")
+              .replace('%7', wrapperClass ? " class=\"" + wrapperClass + "\"" : "");
           });
         }
       }
