@@ -1,6 +1,6 @@
 {
   "name": "showdown-youtube-wrapper",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Embed YouTube videos within showdown with a wrapper around the iframe",
   "keywords": [
     "markdown",

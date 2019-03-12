@@ -1,6 +1,9 @@
 <a name="1.3.0"></a>
 ## [1.3.0](https://github.com/showdownjs/youtbe-extension/compare/1.2.1...v1.3.0)
 
+<a name="1.3.3"></a>
+* Added wrapper for the iframe
+
 #### Features
 * Allow YouTube configuration to include `enablejsapi=1` into the final URL, which enables the JS api for YouTube videos.
   * [YouTube Docs](https://developers.google.com/youtube/player_parameters#enablejsapi)
