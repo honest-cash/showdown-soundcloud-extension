@@ -1,25 +1,27 @@
 {
-  "name": "showdown-youtube-wrapper",
+  "name": "showdown-soundcloud-wrapper",
   "version": "1.3.3",
-  "description": "Embed YouTube videos within showdown with a wrapper around the iframe",
+  "description": "Embed SoundCloud videos within showdown with a wrapper around the iframe",
   "keywords": [
     "markdown",
     "showdown",
     "showdown extension",
-    "youtube"
+    "soundcloud"
   ],
   "author": "Sercan AKMAN (https://github.com/nynevi)",
   "license": "BSD-2-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/honest-cash/showdown-youtube-extension.git",
-    "web": "https://github.com/honest-cash/showdown-youtube-extension"
+    "url": "https://github.com/honest-cash/showdown-soundcloud-extension.git",
+    "web": "https://github.com/honest-cash/showdown-soundcloud-extension"
   },
   "bugs": {
-    "url": "https://github.com/honest-cash/showdown-youtube-extension/issues"
+    "url": "https://github.com/honest-cash/showdown-soundcloud-extension/issues"
   },
-  "main": "./dist/showdown-youtube.js",
+  "main": "./dist/showdown-soundcloud.js",
   "devDependencies": {
     "showdown": "1.5.0"
+  },
+  "dependencies": {
   }
 }

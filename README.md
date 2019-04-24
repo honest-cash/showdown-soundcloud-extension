@@ -13,47 +13,34 @@ This extension enables embedding youtube videos using markdown's image syntax. I
 it borrows image syntax `![foo][bar.jpg]` to create an inframe pointing to the desired video.
 Although it uses the same syntax as images, only valid youtube video links are actually parsed.
 Basically it looks for urls that start with:
- - `http://www.youtube.com/watch?v=` or `youtube.com/watch?v=`
- - `http://www.youtube.com/embed/` or `youtube.com/embed/`
- - `http://youtu.be/` or `youtu.be/`
- - `http://vimeo.com/`
+ - `https://soundcloud.com/uiceheidd/robbery` or
+ - `http://snd.sc/1048eaY`
 
 ## Installation
 
 ### With [npm](http://npmjs.org)
 
-    npm install showdown-youtube
-
-### With [bower](http://bower.io/)
-
-    bower install showdown-youtube
-
-### Manual
-
-You can also [download the latest release zip or tarball](https://github.com/showdownjs/youtube-extension/releases) and include it in your webpage, after showdown:
-
-    <script src="showdown.min.js">
-    <script src="showdown-youtube.min.js">
+    npm install showdown-soundcloud-wrapper
 
 ## Enabling the extension
 
 After including the extension in your application, you just need to enable it in showdown.
 
-    var converter = new showdown.Converter({extensions: ['youtube']});
+    var converter = new showdown.Converter({extensions: ['soundcloud']});
 
 When using in node, ensure to first require the extension so it can register itself with showdown before any converters try to use it.
 
 ```javascript
 var showdown = require('showdown');
-require('showdown-youtube-wrapper');
-var converter = new showdown.Converter({extensions: ['youtube']});
+require('showdown-soundcloud-wrapper');
+var converter = new showdown.Converter({extensions: ['soundcloud']});
 ```
 
 ## Example
 
 ```javascript
-var converter = new showdown.Converter({extensions: ['youtube']}),
-    input = '![youtube video](http://www.youtube.com/watch?v=dQw4w9WgXcQ)';
+var converter = new showdown.Converter({extensions: ['soundcloud']}),
+    input = '![https://soundcloud.com/uiceheidd/robbery](https://soundcloud.com/uiceheidd/robbery)';
     html = converter.makeHtml(input);
 console.log(html);
 ```
@@ -61,51 +48,46 @@ console.log(html);
 This should output the equivalent to:
 
 ```html
-<iframe src="//www.youtube.com/embed/dQw4w9WgXcQ?rel=0" frameborder="0" allowfullscreen></iframe>
+<a href="https://soundcloud.com/uiceheidd/robbery" target="_blank"></iframe>
 ```
 
 ## Wrapper
 To use a wrapper for your iframe you can specify the following options after you define your converter:
 ```javascript
-var converter = new showdown.Converter({extensions: ['youtube']});
+var converter = new showdown.Converter({extensions: ['soundcloud']});
 
-converter.setOption('yt-useWrapper', true); // uses the default div wrapper
+converter.setOption('sc-useWrapper', true); // uses the default div wrapper
 
-var input = '![youtube video](http://www.youtube.com/watch?v=dQw4w9WgXcQ)';
+input = '![https://soundcloud.com/uiceheidd/robbery](https://soundcloud.com/uiceheidd/robbery)';
 var html = converter.makeHtml(input);
 console.log(html);
 ```
-The default wrapper is a div with showdown-youtube-embed-wrapper no id and class. To change these the following can be specified after setting the converter:
+The default wrapper is a div with showdown-soundcloud-embed-wrapper no id and class. To change these the following can be specified after setting the converter:
 ```javascript
-var converter = new showdown.Converter({extensions: ['youtube']});
+var converter = new showdown.Converter({extensions: ['soundcloud']});
 
-converter.setOption('yt-useWrapper', true); // uses the default wrapper
-converter.setOption('yt-wrapperEl', 'p'); // changes the default div wrapper to a paragraph
-converter.setOption('yt-enableWrapperId', true); // enables the wrapper to have a custom Id
-converter.setOption('yt-wrapperId', 'youtube-embed'); // changes the default showdown-youtube-embed-wrapper id to youtube-embed
-converter.setOption('yt-enableWrapperClass', true); // enables the wrapper to have a custom class
-converter.setOption('yt-wrapperClass', 'youtube-embeds'); // changes the default showdown-youtube-embed-wrapper id to youtube-embeds
+converter.setOption('sc-useWrapper', true); // uses the default wrapper
+converter.setOption('sc-wrapperEl', 'p'); // changes the default div wrapper to a paragraph
+converter.setOption('sc-enableWrapperId', true); // enables the wrapper to have a custom Id
+converter.setOption('sc-wrapperId', 'soundcloud-embed'); // changes the default showdown-soundcloud-embed-wrapper id to soundcloud-embed
+converter.setOption('sc-enableWrapperClass', true); // enables the wrapper to have a custom class
+converter.setOption('sc-wrapperClass', 'soundcloud-embeds'); // changes the default showdown-soundcloud-embed-wrapper id to soundcloud-embeds
 
-var input = '![youtube video](http://www.youtube.com/watch?v=dQw4w9WgXcQ)';
+input = '![https://soundcloud.com/uiceheidd/robbery](https://soundcloud.com/uiceheidd/robbery)';
 var html = converter.makeHtml(input);
 console.log(html);
 ```
+as Soundcloud requires an id for the iframe, we cannot manually place iframe with showdown. We'll need to make a request to Soundcloud API from frontend. Replace LINK_HERE with your link:
+`http://soundcloud.com/oembed?format=json&url=LINK_HERE&iframe=true`
+then you can send the html inside the response to the following snippet:
 
-The following CSS can be accompanied with your wrapper to make it fill the width 100% along with an appropriate amount of height:
-```css
-#showdown-youtube-embed-wrapper {
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%;
-}
-#showdown-youtube-embed-wrapper > iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
+The following Jquery snippet can be accompanied with your wrapper to replace the link with the iframe on the frontend
+```javascript
+    $(".soundcloud-embeds").map(async (index, element) => {
+      const link = $(element).find(">:first-child").attr("href");
+      const html; // make a request to the above url and set the html in the response to a variable then replace it with the below code.
+      $(element).find(">:first-child").replaceWith($(result.data.html));
+    });
 ```
 If you change the default ID, make sure to change the CSS aswell.
 
